@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-
 RUNS_ROOT = Path("results/runs")
 SUMMARY_PATH = Path("results/summary.csv")
 
@@ -21,6 +20,12 @@ class RunPaths:
     metrics_json: Path
     metrics_csv: Path
     run_config_json: Path
+    eval_config_json: Path
+    predictions_csv: Path
+    roc_curve_csv: Path
+    roc_curve_png: Path
+    confusion_matrix_csv: Path
+    confusion_matrix_png: Path
     train_log: Path
     eval_log: Path
 
@@ -40,18 +45,22 @@ def build_run_paths(run_id: str, runs_root: Path = RUNS_ROOT) -> RunPaths:
         metrics_json=run_dir / "metrics.json",
         metrics_csv=run_dir / "metrics.csv",
         run_config_json=run_dir / "run_config.json",
+        eval_config_json=run_dir / "eval_config.json",
+        predictions_csv=run_dir / "predictions.csv",
+        roc_curve_csv=run_dir / "roc_curve.csv",
+        roc_curve_png=run_dir / "roc_curve.png",
+        confusion_matrix_csv=run_dir / "confusion_matrix.csv",
+        confusion_matrix_png=run_dir / "confusion_matrix.png",
         train_log=run_dir / "train_log.txt",
         eval_log=run_dir / "eval_log.txt",
     )
 
 
 def ensure_run_dir(paths: RunPaths) -> None:
-    """Create run directory if missing."""
     paths.run_dir.mkdir(parents=True, exist_ok=True)
 
 
 def resolve_train_run_paths(run_id: str | None) -> RunPaths:
-    """Create/use run id for training."""
     resolved_run_id = run_id or generate_run_id()
     paths = build_run_paths(resolved_run_id)
     ensure_run_dir(paths)
@@ -97,9 +106,12 @@ def append_summary_row(row: dict, summary_path: Path = SUMMARY_PATH) -> None:
         "run_id",
         "model_name",
         "seed",
+        "threshold",
         "accuracy",
         "f1",
         "roc_auc",
+        "predictions_csv",
+        "roc_curve_png",
         "timestamp",
     ]
     with summary_path.open("a", newline="", encoding="utf-8") as f:

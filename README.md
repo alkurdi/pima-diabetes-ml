@@ -49,3 +49,12 @@ python src/evaluate.py --run_id exp_001 --seed 42 --data_path data/diabetes.csv
 ويحتوي صفًا لكل run بالأعمدة:
 
 - `run_id, model_name, seed, accuracy, f1, roc_auc, timestamp`
+
+
+## Evaluate with threshold
+
+```bash
+python src/evaluate.py --run_id test1 --threshold 0.5
+```
+
+ينتج داخل كل run: `predictions.csv`, `roc_curve.csv`, `roc_curve.png`, `confusion_matrix.csv`, `confusion_matrix.png`, و `eval_config.json`.
